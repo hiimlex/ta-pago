@@ -2,7 +2,7 @@
 
 ### MVP
 
-- Authentications
+- Authentication
   - Sign up
   - Sign in
   - Login with google
