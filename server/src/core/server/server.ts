@@ -2,8 +2,9 @@ import { json } from "body-parser";
 import express, { Application } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import { AuthController } from "@modules";
 import { routers } from "./routers";
+import cookieParser from "cookie-parser";
+import { JwtSecret } from "@types";
 
 export class Server {
 	app!: Application;
@@ -33,6 +34,7 @@ export class Server {
 	private set_middlewares(): void {
 		this.app.use(json());
 		this.app.use(cors());
+		this.app.use(cookieParser(JwtSecret.toString()));
 	}
 
 	private async connect_mongo_db(): Promise<void> {

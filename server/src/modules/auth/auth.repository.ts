@@ -1,10 +1,17 @@
 import { handle_error } from "@utils/handle_error";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { UsersModel } from "../user";
 import { compareSync, hashSync } from "bcrypt";
-import { HashSalt, JwtExpiresIn, JwtSecret, SystemErrors } from "@types";
+import {
+	AccessTokenCookie,
+	COOKIE_MAX_AGE,
+	HashSalt,
+	JwtExpiresIn,
+	JwtSecret,
+	SystemErrors,
+} from "@types";
 import { HttpException } from "@core/server";
-import jwt, { sign } from "jsonwebtoken";
+import jwt, { decode, sign } from "jsonwebtoken";
 
 class AuthRepository {
 	async login(req: Request, res: Response) {
@@ -14,13 +21,13 @@ class AuthRepository {
 			const user = await UsersModel.findOne({ email });
 
 			if (!user) {
-				throw new HttpException(404, SystemErrors.USER_NOT_FOUND);
+				throw new HttpException(404, "USER_NOT_FOUND");
 			}
 
 			const is_password_valid = compareSync(password, user.password);
 
 			if (!is_password_valid) {
-				throw new HttpException(400, SystemErrors.INVALID_CREDENTIALS);
+				throw new HttpException(400, "INVALID_CREDENTIALS");
 			}
 
 			const access_token = sign({ id: user._id.toString() }, JwtSecret, {
@@ -31,9 +38,17 @@ class AuthRepository {
 				access_token: access_token.toString(),
 			});
 
-			return res.status(200).json({
-				access_token,
-			});
+			return res
+				.status(204)
+				.cookie(AccessTokenCookie, access_token, {
+					httpOnly: true,
+					signed: true,
+					maxAge: COOKIE_MAX_AGE,
+					secure: true,
+					sameSite: "none",
+					// domain: process.env.FRONTEND_URL || "http://localhost:3001",
+				})
+				.json(null);
 		} catch (error) {
 			return handle_error(res, error);
 		}
@@ -52,6 +67,50 @@ class AuthRepository {
 			});
 
 			return res.status(201).json(user);
+		} catch (error) {
+			return handle_error(res, error);
+		}
+	}
+
+	async me(req: Request, res: Response) {
+		try {
+			const { user } = res.locals;
+
+			if (!user) {
+				throw new HttpException(404, "USER_NOT_FOUND");
+			}
+
+			return res.status(200).json(user);
+		} catch (error) {
+			return handle_error(res, error);
+		}
+	}
+
+	async is_authenticated(req: Request, res: Response, next: NextFunction) {
+		try {
+			const access_token =
+				req.signedCookies[AccessTokenCookie] || req.cookies[AccessTokenCookie];
+
+			if (!access_token) {
+				throw new HttpException(401, "UNAUTHORIZED");
+			}
+
+			const decoded_token = decode(access_token);
+
+			if (!decoded_token) {
+				throw new HttpException(401, "UNAUTHORIZED");
+			}
+
+			const { id } = decoded_token as { id: string };
+
+			const user = await UsersModel.findById(id);
+
+			if (!user) {
+				throw new HttpException(404, "USER_NOT_FOUND");
+			}
+
+			res.locals.user = user;
+			next();
 		} catch (error) {
 			return handle_error(res, error);
 		}

@@ -1,10 +1,10 @@
-import { SystemErrors } from "@types";
+import { SystemErrors, TSystemErrors } from "@types";
 
 export class HttpException extends Error {
 	message!: string;
 	status: number;
 
-	constructor(status: number, message: SystemErrors) {
+	constructor(status: number, message: TSystemErrors) {
 		super();
 
 		if (SystemErrors[message]) {
