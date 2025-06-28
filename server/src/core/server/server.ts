@@ -2,6 +2,8 @@ import { json } from "body-parser";
 import express, { Application } from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import { AuthController } from "@modules";
+import { routers } from "./routers";
 
 export class Server {
 	app!: Application;
@@ -11,6 +13,7 @@ export class Server {
 		this.app = express();
 		this.port = port;
 
+		this.connect_mongo_db();
 		this.set_middlewares();
 		this.init_routes();
 	}
@@ -21,7 +24,12 @@ export class Server {
 		});
 	}
 
-	private init_routes(): void {}
+	private init_routes(): void {
+		for (const router of routers) {
+			this.app.use(router);
+		}
+	}
+
 	private set_middlewares(): void {
 		this.app.use(json());
 		this.app.use(cors());
