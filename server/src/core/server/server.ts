@@ -9,10 +9,12 @@ import { JwtSecret } from "@types";
 export class Server {
 	app!: Application;
 	port!: number | string;
+	prefix!: string;
 
 	constructor(port: number | string) {
 		this.app = express();
 		this.port = port;
+		this.prefix = process.env.API_PREFIX || "/api/v1";
 
 		this.connect_mongo_db();
 		this.set_middlewares();
@@ -27,7 +29,7 @@ export class Server {
 
 	private init_routes(): void {
 		for (const router of routers) {
-			this.app.use(router);
+			this.app.use(this.prefix, router);
 		}
 	}
 

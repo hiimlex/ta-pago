@@ -1,17 +1,16 @@
-import { handle_error } from "@utils/handle_error";
-import { NextFunction, Request, Response } from "express";
-import { UsersModel } from "../user";
-import { compareSync, hashSync } from "bcrypt";
+import { HttpException } from "@core/server";
 import {
 	AccessTokenCookie,
 	COOKIE_MAX_AGE,
 	HashSalt,
 	JwtExpiresIn,
 	JwtSecret,
-	SystemErrors,
 } from "@types";
-import { HttpException } from "@core/server";
-import jwt, { decode, sign } from "jsonwebtoken";
+import { handle_error } from "@utils/handle_error";
+import { compareSync, hashSync } from "bcrypt";
+import { NextFunction, Request, Response } from "express";
+import { decode, sign } from "jsonwebtoken";
+import { UsersModel } from "../users";
 
 class AuthRepository {
 	async login(req: Request, res: Response) {
@@ -117,4 +116,6 @@ class AuthRepository {
 	}
 }
 
-export default new AuthRepository();
+const AuthRepositoryImpl = new AuthRepository();
+
+export { AuthRepositoryImpl };

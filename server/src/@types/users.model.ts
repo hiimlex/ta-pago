@@ -1,7 +1,7 @@
-import { UserSchema } from "@modules";
+import { UsersSchema } from "@modules";
 import { Document, InferSchemaType, Model, Types } from "mongoose";
 
-export type TUser = InferSchemaType<typeof UserSchema>;
+export type TUser = InferSchemaType<typeof UsersSchema>;
 
 export interface IUserDocument extends Document<Types.ObjectId>, TUser {}
 

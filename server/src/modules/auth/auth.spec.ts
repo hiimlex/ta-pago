@@ -2,8 +2,7 @@ import mongoose from "mongoose";
 import { test_agent } from "../../app";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import { create_user_mock } from "../../__mocks__";
-import { Endpoints } from "@types";
-import { STATUS_CODES } from "http";
+import { ApiPrefix, Endpoints } from "@types";
 
 const test_server = test_agent;
 let mongo_server: MongoMemoryServer;
@@ -35,7 +34,7 @@ describe("Auth module", () => {
 
 	it("POST /auth/sign-up", async () => {
 		const { body: c_user, statusCode } = await test_server
-			.post(Endpoints.AuthSignUp)
+			.post(ApiPrefix + Endpoints.AuthSignUp)
 			.send(mock_user);
 
 		expect(statusCode).toBe(201);
@@ -47,7 +46,7 @@ describe("Auth module", () => {
 
 	it("POST /auth/login", async () => {
 		const { statusCode, headers } = await test_server
-			.post(Endpoints.AuthLogin)
+			.post(ApiPrefix + Endpoints.AuthLogin)
 			.send({
 				email: mock_user.email,
 				password: mock_user.password,
@@ -65,7 +64,7 @@ describe("Auth module", () => {
 
 	it("GET /auth/me", async () => {
 		const response = await test_server
-			.get(Endpoints.AuthMe)
+			.get(ApiPrefix + Endpoints.AuthMe)
 			.set("Cookie", cookie);
 
 		expect(response.statusCode).toBe(200);

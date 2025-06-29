@@ -1,0 +1,16 @@
+export const Endpoints = {
+	AuthLogin: "/auth/login",
+	AuthSignUp: "/auth/sign-up",
+	AuthMe: "/auth/me",
+	UsersCreate: "/users",
+	UsersList: "/users",
+	UsersGet: "/users/:id",
+	UsersUpdate: "/users/:id",
+	UsersDelete: "/users/:id",
+	CrewsCreate: "/crews",
+	CrewsList: "/crews",
+	CrewsGet: "/crews/:code",
+	CrewsUpdate: "/crews/:id",
+	CrewsDelete: "/crews/:id",
+	CrewsJoin: "/crews/join",
+};
