@@ -37,4 +37,3 @@
   - Buy item
   - Create item
   - Item history
-  

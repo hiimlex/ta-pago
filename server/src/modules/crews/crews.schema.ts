@@ -30,14 +30,15 @@ const CrewsSchema = new Schema(
 			required: true,
 			unique: true,
 		},
-		admin_id: {
-			type: Schema.Types.ObjectId,
+		admins: {
+			type: [Types.ObjectId],
 			ref: Collections.Users,
+			required: true,
 		},
 		members: {
 			type: [Types.ObjectId],
 			ref: Collections.Users,
-			required: false,
+			required: true,
 		},
 		white_list: {
 			type: [Types.ObjectId],
@@ -80,4 +81,4 @@ const CrewsModel: ICrewsModel = model<ICrewDocument, ICrewsModel>(
 	CrewsSchema
 );
 
-export { CrewsSchema, CrewRulesSchema, CrewsModel };
+export { CrewRulesSchema, CrewsModel, CrewsSchema };
