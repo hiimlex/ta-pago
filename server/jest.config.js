@@ -9,7 +9,7 @@ module.exports = {
 			prefix: "<rootDir>/src/",
 		}),
 		"^@modules$": "<rootDir>/src/modules",
-		"^@types$": "<rootDir>/src/@types",
+		"^types$": "<rootDir>/src/types",
 		"^@core$": "<rootDir>/src/core",
 		"^@utils$": "<rootDir>/src/utils",
 	},

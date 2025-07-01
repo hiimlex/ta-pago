@@ -1,6 +1,7 @@
-import { timestamps } from "@core/config";
-import { Collections, IUserDocument, IUsersModel } from "@types";
+import { timestamps } from "@config/schema.config";
+import { composeWithMongoose } from "graphql-compose-mongoose";
 import { model, Schema } from "mongoose";
+import { Collections, IUserDocument, IUsersModel } from "types/collections";
 
 const UsersSchema = new Schema(
 	{
@@ -26,7 +27,8 @@ UsersSchema.methods.toJSON = function () {
 
 const UsersModel: IUsersModel = model<IUserDocument, IUsersModel>(
 	Collections.Users,
-	UsersSchema
+	UsersSchema,
+	Collections.Users
 );
 
-export { UsersSchema, UsersModel };
+export { UsersModel, UsersSchema };

@@ -1,8 +1,8 @@
-import { HttpException } from "@core/server";
-import { IUserDocument } from "@types";
+import { HttpException } from "@core/http_exception";
+import { UsersModel } from "@modules/users";
 import { handle_error } from "@utils/handle_error";
 import { Request, Response } from "express";
-import { UsersModel } from "modules/users";
+import { IUserDocument } from "types/collections";
 import { CrewsModel } from "./crews.schema";
 
 class CrewsRepository {
@@ -18,12 +18,10 @@ class CrewsRepository {
 				code,
 				banner,
 				rules,
-				admin_id: user._id,
+				admins: [user._id],
 				members: [user._id],
 				white_list: [],
 			});
-
-			await crew.populate_members();
 
 			return res.status(201).json(crew);
 		} catch (error) {
@@ -92,26 +90,30 @@ class CrewsRepository {
 	}
 
 	async leave(req: Request, res: Response) {
-		const { code } = req.body;
-		const { user } = res.locals;
+		try {
+			const { code } = req.body;
+			const { user } = res.locals;
 
-		const crew = await CrewsModel.findOne({ code });
+			const crew = await CrewsModel.findOne({ code });
 
-		if (!crew) {
-			throw new HttpException(404, "CREW_NOT_FOUND");
+			if (!crew) {
+				throw new HttpException(404, "CREW_NOT_FOUND");
+			}
+
+			const is_member = crew.members.includes(user._id);
+
+			if (!is_member) {
+				throw new HttpException(400, "USER_NOT_A_MEMBER");
+			}
+
+			await crew.updateOne({
+				$pull: { members: user._id },
+			});
+
+			return res.status(204).json();
+		} catch (error) {
+			return handle_error(res, error);
 		}
-
-		const is_member = crew.members.includes(user._id);
-
-		if (!is_member) {
-			throw new HttpException(400, "USER_NOT_A_MEMBER");
-		}
-
-		await crew.updateOne({
-			$pull: { members: user._id },
-		});
-
-		return res.status(204).json();
 	}
 
 	async update_admin(req: Request, res: Response) {

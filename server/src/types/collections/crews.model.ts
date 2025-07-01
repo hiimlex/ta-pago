@@ -1,4 +1,4 @@
-import { CrewsSchema } from "@modules";
+import { CrewsSchema } from "@modules/crews";
 import { InferSchemaType, Document, Model } from "mongoose";
 
 export enum CrewVisibility {

@@ -1,12 +1,14 @@
-import { timestamps } from "@core/config";
+import { timestamps } from "@config/schema.config";
+import { composeWithMongoose } from "graphql-compose-mongoose";
+import { model, RootFilterQuery, Schema, Types } from "mongoose";
 import {
 	Collections,
 	CrewStrikes,
 	CrewVisibility,
 	ICrewDocument,
 	ICrewsModel,
-} from "@types";
-import { model, Schema, Types } from "mongoose";
+} from "types/collections";
+import { UsersTC } from "../users";
 
 const CrewRulesSchema = new Schema(
 	{
@@ -30,21 +32,27 @@ const CrewsSchema = new Schema(
 			required: true,
 			unique: true,
 		},
-		admins: {
-			type: [Types.ObjectId],
-			ref: Collections.Users,
-			required: true,
-		},
-		members: {
-			type: [Types.ObjectId],
-			ref: Collections.Users,
-			required: true,
-		},
-		white_list: {
-			type: [Types.ObjectId],
-			ref: Collections.Users,
-			required: false,
-		},
+		admins: [
+			{
+				type: Types.ObjectId,
+				ref: Collections.Users,
+				required: true,
+			},
+		],
+		members: [
+			{
+				type: Types.ObjectId,
+				ref: Collections.Users,
+				required: true,
+			},
+		],
+		white_list: [
+			{
+				type: Types.ObjectId,
+				ref: Collections.Users,
+				required: false,
+			},
+		],
 		visibility: {
 			type: String,
 			enum: Object.values(CrewVisibility),
@@ -54,7 +62,17 @@ const CrewsSchema = new Schema(
 			type: String,
 			required: false,
 		},
-		rules: { type: CrewRulesSchema, required: false },
+		rules: {
+			type: CrewRulesSchema,
+			required: false,
+			default: {
+				gym_focused: false,
+				paid_at_anytime: true,
+				paid_without_picture: true,
+				show_members_rank: true,
+				free_weekends: true,
+			},
+		},
 		strikes: {
 			type: [String],
 			enum: Object.values(CrewStrikes),
@@ -78,7 +96,12 @@ CrewsSchema.methods.populate_members = async function () {
 
 const CrewsModel: ICrewsModel = model<ICrewDocument, ICrewsModel>(
 	Collections.Crews,
-	CrewsSchema
+	CrewsSchema,
+	Collections.Crews
 );
 
-export { CrewRulesSchema, CrewsModel, CrewsSchema };
+export {
+	CrewRulesSchema,
+	CrewsModel,
+	CrewsSchema,
+};

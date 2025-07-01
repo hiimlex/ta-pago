@@ -1,16 +1,18 @@
 import mongoose from "mongoose";
-import { test_agent } from "../../app";
+import { test_agent } from "../..";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import { create_crew_mock, create_user_mock } from "../../__mocks__";
-import { ApiPrefix, Endpoints, IUserDocument, TCrew, TUser } from "@types";
-import { mock } from "node:test";
+import { ApiPrefix, Endpoints } from "types/generics";
+import { IUserDocument, TUser } from "types/collections/users.model";
+import { TCrew } from "types/collections";
+
 
 const test_server = test_agent;
 let mongo_server: MongoMemoryServer;
 let cookie: string;
 let mock_user: TUser;
 let created_user: IUserDocument;
-let mock_crew: TCrew;
+let mock_crew: Partial<TCrew>;
 
 beforeAll(async () => {
 	if (mongoose.connection.readyState !== 0) {
@@ -38,7 +40,7 @@ beforeAll(async () => {
 	cookie = cookies[0];
 
 	mock_crew = create_crew_mock({
-		admin_id: created_user._id,
+		admins: [created_user._id] as any,
 	});
 });
 
@@ -67,7 +69,7 @@ describe("Crews module", () => {
 
 	it("GET /crews/:code", async () => {
 		const { statusCode, body } = await test_server
-			.get(ApiPrefix + Endpoints.CrewsGet.replace(":code", mock_crew.code))
+			.get(ApiPrefix + Endpoints.CrewsGet.replace(":code", mock_crew.code || ''))
 			.set("Cookie", cookie);
 
 		expect(statusCode).toBe(200);

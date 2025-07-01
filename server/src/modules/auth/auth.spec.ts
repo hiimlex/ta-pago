@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import { test_agent } from "../../app";
+import { test_agent } from "../..";
 import { MongoMemoryServer } from "mongodb-memory-server";
 import { create_user_mock } from "../../__mocks__";
-import { ApiPrefix, Endpoints } from "@types";
+import { ApiPrefix, Endpoints } from "types/generics";
 
 const test_server = test_agent;
 let mongo_server: MongoMemoryServer;

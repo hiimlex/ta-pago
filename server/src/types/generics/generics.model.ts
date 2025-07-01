@@ -1,10 +1,5 @@
 import { Secret, SignOptions } from "jsonwebtoken";
 
-export const Collections = {
-	Users: "Users",
-	Crews: "Crews",
-};
-
 export const HashSalt = 10;
 
 export const JwtSecret: Secret =

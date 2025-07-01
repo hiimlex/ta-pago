@@ -1,5 +1,5 @@
 import { BaseController } from "@core/base_controller";
-import { Endpoints } from "@types";
+import { Endpoints } from "types/generics";
 import { CrewsRepositoryImpl } from "./crews.repository";
 import { AuthRepositoryImpl } from "../auth";
 
@@ -11,22 +11,14 @@ export class CrewsController extends BaseController {
 	define_routes(): void {
 		this.router.post(
 			Endpoints.CrewsCreate,
-			(req, res, next) => {
-				AuthRepositoryImpl.is_authenticated(req, res, next);
-			},
-			(req, res) => {
-				CrewsRepositoryImpl.create(req, res);
-			}
+			AuthRepositoryImpl.is_authenticated,
+			CrewsRepositoryImpl.create
 		);
 
 		this.router.get(
 			Endpoints.CrewsGet,
-			(req, res, next) => {
-				AuthRepositoryImpl.is_authenticated(req, res, next);
-			},
-			(req, res) => {
-				CrewsRepositoryImpl.get_by_code(req, res);
-			}
+			AuthRepositoryImpl.is_authenticated,
+			CrewsRepositoryImpl.get_by_code
 		);
 	}
 }

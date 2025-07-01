@@ -1,4 +1,4 @@
-import { SystemErrors, TSystemErrors } from "@types";
+import { SystemErrors, TSystemErrors } from "types/generics";
 
 export class HttpException extends Error {
 	message!: string;

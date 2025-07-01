@@ -9,10 +9,11 @@
 		"outDir": "dist",
 		"baseUrl": "./src",
 		"paths": {
-			"@types": ["./@types"],
+			"types/*": ["./types/*"],
 			"@core/*": ["./core/*"],
-			"@modules": ["./modules"],
-			"@utils/*": ["./utils/*"]
+			"@modules/*": ["./modules/*"],
+			"@utils/*": ["./utils/*"],
+			"@config/*": ["./config/*"]
 		}
 	},
 	"include": ["./src/**/*"],

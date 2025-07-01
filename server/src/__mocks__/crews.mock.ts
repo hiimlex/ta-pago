@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { CrewStrikes, CrewVisibility, TCrew } from "@types";
+import { CrewStrikes, CrewVisibility, TCrew } from "types/collections";
 
 export const create_crew_mock = (crew: Partial<TCrew>): Partial<TCrew> => ({
 	name: faker.company.name(),

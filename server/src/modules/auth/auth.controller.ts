@@ -1,5 +1,5 @@
 import { BaseController } from "@core/base_controller";
-import { Endpoints } from "@types";
+import { Endpoints } from "types/generics";
 import { AuthRepositoryImpl } from "./auth.repository";
 
 export class AuthController extends BaseController {
@@ -8,22 +8,14 @@ export class AuthController extends BaseController {
 	}
 
 	define_routes(): void {
-		this.router.post(Endpoints.AuthSignUp, (req, res) => {
-			AuthRepositoryImpl.sign_up(req, res);
-		});
+		this.router.post(Endpoints.AuthSignUp, AuthRepositoryImpl.sign_up);
 
-		this.router.post(Endpoints.AuthLogin, (req, res) => {
-			AuthRepositoryImpl.login(req, res);
-		});
+		this.router.post(Endpoints.AuthLogin, AuthRepositoryImpl.login);
 
 		this.router.get(
 			Endpoints.AuthMe,
-			(req, res, next) => {
-				AuthRepositoryImpl.is_authenticated(req, res, next);
-			},
-			(req, res) => {
-				AuthRepositoryImpl.me(req, res);
-			}
+			AuthRepositoryImpl.is_authenticated,
+			AuthRepositoryImpl.me
 		);
 	}
 }

@@ -1,16 +1,16 @@
-import { HttpException } from "@core/server";
+import { HttpException } from "@core/http_exception/http_exception";
 import {
 	AccessTokenCookie,
 	COOKIE_MAX_AGE,
 	HashSalt,
 	JwtExpiresIn,
 	JwtSecret,
-} from "@types";
-import { handle_error } from "@utils/handle_error";
+} from "types/generics";
 import { compareSync, hashSync } from "bcrypt";
 import { NextFunction, Request, Response } from "express";
 import { decode, sign } from "jsonwebtoken";
 import { UsersModel } from "../users";
+import { handle_error } from "@utils/handle_error";
 
 class AuthRepository {
 	async login(req: Request, res: Response) {
@@ -38,7 +38,6 @@ class AuthRepository {
 			});
 
 			return res
-				.status(204)
 				.cookie(AccessTokenCookie, access_token, {
 					httpOnly: true,
 					signed: true,
@@ -47,7 +46,7 @@ class AuthRepository {
 					sameSite: "none",
 					// domain: process.env.FRONTEND_URL || "http://localhost:3001",
 				})
-				.json(null);
+				.sendStatus(204);
 		} catch (error) {
 			return handle_error(res, error);
 		}
