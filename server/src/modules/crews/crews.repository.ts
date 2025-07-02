@@ -45,7 +45,7 @@ class CrewsRepository {
 		}
 	}
 
-	async join_by_code(req: Request, res: Response) {
+	async join(req: Request, res: Response) {
 		try {
 			const { code } = req.body;
 			const { user } = res.locals;
@@ -83,7 +83,7 @@ class CrewsRepository {
 				$addToSet: { members: user._id },
 			});
 
-			return res.status(204).json();
+			return res.sendStatus(204);
 		} catch (error) {
 			return handle_error(res, error);
 		}
@@ -110,7 +110,7 @@ class CrewsRepository {
 				$pull: { members: user._id },
 			});
 
-			return res.status(204).json();
+			return res.sendStatus(204);
 		} catch (error) {
 			return handle_error(res, error);
 		}
@@ -119,6 +119,7 @@ class CrewsRepository {
 	async update_admin(req: Request, res: Response) {
 		try {
 			const { user_id, code, set_admin } = req.body;
+			console.log(user_id);
 			const admin: IUserDocument = res.locals.user;
 
 			const user = await UsersModel.findById(user_id);
@@ -153,7 +154,11 @@ class CrewsRepository {
 				});
 			}
 
-			return res.status(204).json();
+			const updatedCrew = await CrewsModel.findById({
+				_id: crew._id,
+			})
+
+			return res.status(200).json(updatedCrew);
 		} catch (error) {
 			return handle_error(res, error);
 		}
@@ -162,9 +167,9 @@ class CrewsRepository {
 	async accept_member(req: Request, res: Response) {
 		try {
 			const admin: IUserDocument = res.locals.user;
-			const { userId, code } = req.body;
+			const { user_id, code } = req.body;
 
-			const user = await UsersModel.findById(userId);
+			const user = await UsersModel.findById(user_id);
 
 			if (!user) {
 				throw new HttpException(404, "USER_NOT_FOUND");
@@ -200,7 +205,7 @@ class CrewsRepository {
 				$addToSet: { members: user._id },
 			});
 
-			return res.status(204).json();
+			return res.sendStatus(204);
 		} catch (error) {
 			return handle_error(res, error);
 		}
@@ -208,10 +213,10 @@ class CrewsRepository {
 
 	async kick_member(req: Request, res: Response) {
 		try {
-			const { userId, code } = req.body;
+			const { user_id, code } = req.body;
 			const admin: IUserDocument = res.locals.user;
 
-			const user = await UsersModel.findById(userId);
+			const user = await UsersModel.findById(user_id);
 
 			if (!user) {
 				throw new HttpException(404, "USER_NOT_FOUND");
@@ -241,10 +246,10 @@ class CrewsRepository {
 			}
 
 			await crew.updateOne({
-				$pull: { members: userId },
+				$pull: { members: user_id },
 			});
 
-			return res.status(204).json();
+			return res.sendStatus(204);
 		} catch (error) {
 			return handle_error(res, error);
 		}

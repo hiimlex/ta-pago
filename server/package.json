@@ -8,8 +8,9 @@
 		"dev": "ts-node-dev -r tsconfig-paths/register src/index.ts",
 		"build": "npx tsc && npx tspath -f",
 		"watch-ts": "npx tsc -w",
-		"test": "npx jest",
-		"test:watch": "npx jest --watch"
+		"test": "npx cross-env NODE_ENV=test jest --no-cache --watchAll=false --color",
+		"test:watch": "npx cross-env NODE_ENV=test jest --watch --no-cache --onlyChanged ",
+		"test:coverage": "npx cross-env NODE_ENV=test jest --coverage"
 	},
 	"keywords": [],
 	"author": "",
@@ -46,6 +47,7 @@
 		"@types/jsonwebtoken": "^9.0.10",
 		"@types/node": "^24.0.4",
 		"@types/supertest": "^6.0.3",
+		"cross-env": "^7.0.3",
 		"mongodb-memory-server": "^10.1.4",
 		"ts-jest": "^29.4.0",
 		"ts-node": "^10.9.2",

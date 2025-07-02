@@ -6,11 +6,11 @@ export function handle_error(res: Response, error: any): Response {
 	const message: string = error.message || "";
 
 	if (error instanceof HttpException) {
-		logger.error(`**ERROR**: [${error.status}] : ${error.message}`);
+		logger.error(`ERROR: [${error.status}] ${error.message}`);
 		return res.status(error.status).json({ message });
 	}
 
-	logger.error(`**ERROR**: ${message}`);
+	logger.error(`ERROR: ${message}`);
 
 	return res.status(400).json({ message });
 }

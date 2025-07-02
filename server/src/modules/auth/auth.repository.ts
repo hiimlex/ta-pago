@@ -104,6 +104,7 @@ class AuthRepository {
 			const user = await UsersModel.findById(id);
 
 			if (!user) {
+				console.log("User not found for ID:", id);
 				throw new HttpException(404, "USER_NOT_FOUND");
 			}
 

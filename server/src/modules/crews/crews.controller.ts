@@ -16,9 +16,39 @@ export class CrewsController extends BaseController {
 		);
 
 		this.router.get(
-			Endpoints.CrewsGet,
+			Endpoints.CrewsGetByCode,
 			AuthRepositoryImpl.is_authenticated,
 			CrewsRepositoryImpl.get_by_code
+		);
+
+		this.router.post(
+			Endpoints.CrewsJoin,
+			AuthRepositoryImpl.is_authenticated,
+			CrewsRepositoryImpl.join
+		);
+
+		this.router.post(
+			Endpoints.CrewsLeave,
+			AuthRepositoryImpl.is_authenticated,
+			CrewsRepositoryImpl.leave
+		);
+
+		this.router.put(
+			Endpoints.CrewsUpdateAdmin,
+			AuthRepositoryImpl.is_authenticated,
+			CrewsRepositoryImpl.update_admin
+		);
+
+		this.router.post(
+			Endpoints.CrewsAcceptMember,
+			AuthRepositoryImpl.is_authenticated,
+			CrewsRepositoryImpl.accept_member
+		);
+
+		this.router.post(
+			Endpoints.CrewsKickMember,
+			AuthRepositoryImpl.is_authenticated,
+			CrewsRepositoryImpl.kick_member
 		);
 	}
 }

@@ -12,15 +12,7 @@ const sensitiveFields = ["password", "access_token"];
 export const logger = winston.createLogger({
 	level: "info",
 	format: winston.format.combine(
-		winston.format.timestamp({ format: timezoneDate }),
-		winston.format.json({
-			replacer(key, value) {
-				if (sensitiveFields.includes(key)) {
-					return undefined;
-				}
-				return value;
-			},
-		}),
+		winston.format.json(),
 		winston.format.colorize({ all: true })
 	),
 	transports: [new winston.transports.Console()],
@@ -34,14 +26,7 @@ export function add_mongo_transport() {
 		collection: "Logs",
 		capped: true,
 		cappedMax: 1000,
-		format: winston.format.json({
-			replacer(key, value) {
-				if (sensitiveFields.includes(key)) {
-					return undefined;
-				}
-				return value;
-			},
-		}),
+		format: winston.format.json(),
 	};
 
 	logger.add(new MongoDB(transportOptions));

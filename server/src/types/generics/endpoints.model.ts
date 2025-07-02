@@ -6,12 +6,12 @@ export const Endpoints = {
 	// Crews
 	CrewsCreate: "/crews",
 	CrewsList: "/crews",
-	CrewsGet: "/crews/:code",
+	CrewsGetByCode: "/crews/:code",
 	CrewsUpdate: "/crews/:id",
 	CrewsDelete: "/crews/:id",
-	CrewsJoinByCode: "/crews/join",
+	CrewsJoin: "/crews/join",
 	CrewsLeave: "/crews/leave",
-	CrewsUpdateAdmin: "/crews/:userId/admin",
+	CrewsUpdateAdmin: "/crews/admins/",
 	CrewsAcceptMember: "/crews/accept-member",
 	CrewsKickMember: "/crews/kick-member",
 	// Users

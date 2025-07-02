@@ -32,27 +32,22 @@ const CrewsSchema = new Schema(
 			required: true,
 			unique: true,
 		},
-		admins: [
-			{
-				type: Types.ObjectId,
-				ref: Collections.Users,
-				required: true,
-			},
-		],
-		members: [
-			{
-				type: Types.ObjectId,
-				ref: Collections.Users,
-				required: true,
-			},
-		],
-		white_list: [
-			{
-				type: Types.ObjectId,
-				ref: Collections.Users,
-				required: false,
-			},
-		],
+		admins: {
+			type: [Types.ObjectId],
+			ref: Collections.Users,
+			required: true,
+		},
+		members: {
+			type: [Types.ObjectId],
+			ref: Collections.Users,
+			required: true,
+		},
+
+		white_list: {
+			type: [Types.ObjectId],
+			ref: Collections.Users,
+			required: false,
+		},
 		visibility: {
 			type: String,
 			enum: Object.values(CrewVisibility),
@@ -100,8 +95,4 @@ const CrewsModel: ICrewsModel = model<ICrewDocument, ICrewsModel>(
 	Collections.Crews
 );
 
-export {
-	CrewRulesSchema,
-	CrewsModel,
-	CrewsSchema,
-};
+export { CrewRulesSchema, CrewsModel, CrewsSchema };

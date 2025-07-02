@@ -1,22 +1,20 @@
+import { expressMiddleware } from "@as-integrations/express4";
 import { connect_database } from "@config/connect_database";
-import { JwtSecret } from "types/generics";
 import { json } from "body-parser";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import express, { Application, NextFunction, Request, Response } from "express";
+import express, { Application } from "express";
+import { create_apollo_server } from "gpql/gpql";
+import mongoose from "mongoose";
+import { JwtSecret } from "types/generics";
 import { routers } from "./routers/routers";
-import { create_apollo_server } from "./gpql/gpql";
-import { expressMiddleware } from "@as-integrations/express4";
 
 export class Server {
 	app!: Application;
-	port!: number | string;
-	prefix!: string;
+	prefix = process.env.API_PREFIX || "/api/v1";
+	db!: typeof mongoose;
 
-	constructor(port: number | string) {
-		this.port = port;
-		this.prefix = process.env.API_PREFIX || "/api/v1";
-	}
+	constructor() {}
 
 	private init_routes() {
 		for (const router of routers) {
@@ -30,21 +28,36 @@ export class Server {
 		this.app.use(cookieParser(JwtSecret.toString()));
 	}
 
-	async start() {
+	setup() {
 		this.app = express();
 
-		await connect_database();
-		const apollo_server = await create_apollo_server();
+		connect_database().then((db_instance) => {
+			if (db_instance) {
+				this.db = db_instance;
+			}
+		});
 
 		this.set_middlewares();
+
 		this.init_routes();
 
-		if (apollo_server) {
-			this.app.use("/graphql", expressMiddleware(apollo_server));
-		}
-
-		this.app.listen(this.port, () => {
-			console.log(`Server started at port ${this.port}`);
+		create_apollo_server().then((apollo_server) => {
+			if (apollo_server) {
+				this.app.use("/graphql", expressMiddleware(apollo_server));
+			}
 		});
+	}
+
+	start() {
+		if (process.env.NODE_ENV !== "test") {
+			const PORT = process.env.PORT || 8080;
+			this.app.listen(PORT);
+		}
+	}
+
+	async stop() {
+		if (this.db && this.db.connection.readyState !== 0) {
+			await this.db.disconnect();
+		}
 	}
 }

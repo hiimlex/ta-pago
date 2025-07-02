@@ -29,7 +29,7 @@ CrewsTC.addRelation("white_list", {
 	resolver: () => UsersTC.getResolver("findMany"),
 	prepareArgs: {
 		filter: (source: ICrewDocument) => ({
-			_id: { $in: source.white_list.map((id) => id.toString) },
+			_id: { $in: (source.white_list || []).map((id) => id.toString) },
 		}),
 	},
 	projection: { white_list: true },
